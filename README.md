@@ -6,5 +6,4 @@
  
 # Requirements
 * The official copy of the game
-* BepInEx Mono 6.x
-* HarmonyX
+* [BepInEx Mono 6.x](https://builds.bepis.io/projects/bepinex_be) and HarmonyX

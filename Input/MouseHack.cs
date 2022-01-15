@@ -7,14 +7,14 @@ using UnityEngine;
 namespace SuisHack.Input
 {
 	[HarmonyPatch(typeof(PlayerBehaviour))]
-	[HarmonyPatch("UpdateMoveControlStandAlone")]
 	public static class MouseHack
 	{
+		[HarmonyPatch("UpdateMoveControlStandAlone")]
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> row, ILGenerator generator)
 		{
 			var codes = new List<CodeInstruction>(row);
 
-			var match = new CodeMatcher(row).MatchForward(false,
+			var match = new CodeMatcher(codes).MatchForward(false,
 				new CodeMatch(OpCodes.Ldstr, "Mouse Y"),
 				new CodeMatch(OpCodes.Call, AccessTools.Method(AccessTools.TypeByName("UnityEngine.Input"), "GetAxis"))
 				);
@@ -33,30 +33,13 @@ namespace SuisHack.Input
 
 			Plugin.log.LogInfo("Successfully located code");
 			match.Advance(2);
+			match.InsertAndAdvance(new CodeInstruction(OpCodes.Ldc_R4, -1),
+				new CodeInstruction(OpCodes.Mul),
+				new CodeInstruction(OpCodes.Ldloc_2));
+			match.RemoveInstruction();
+			codes = match.Instructions();
 
-			Label l1 = generator.DefineLabel();
-			Label l2 = generator.DefineLabel();
-
-			/*			List<CodeInstruction> patch = new List<CodeInstruction>()
-						{
-							new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Global), "get_config")),
-							new CodeInstruction(OpCodes.Ldfld, AccessTools.Field(typeof(Config), "JoyPadVertivalReversal")),
-							new CodeInstruction(OpCodes.Brtrue_S, l1),
-							new CodeInstruction(OpCodes.Ldc_R4, 1)
-							new CodeInstruction(OpCodes.Brtrue_S, l2),
-							new CodeInstruction(OpCodes.Ldc_R4, -1).WithLabels(l1),
-							new CodeInstruction(OpCodes.Mul).WithLabels(l2),
-							new CodeInstruction(OpCodes.Ldloc_2).WithLabels()
-						};
-						match.InsertAndAdvance(patch);
-						match.RemoveInstruction();*/
-
-			//match.CreateLabel(out l1);
-			match.InsertAndAdvance(new CodeInstruction(OpCodes.Nop));
-			//match.CreateLabel(out l2);
-
-
-			return match.Instructions();
+			return codes.AsEnumerable();
 		}
 	}
 }

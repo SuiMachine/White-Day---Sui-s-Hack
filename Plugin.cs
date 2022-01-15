@@ -7,9 +7,11 @@ namespace SuisHack
 	public class Plugin : BaseUnityPlugin
 	{
 		public static Harmony harmonyInstance { get; private set; }
+		public static BepInEx.Logging.ManualLogSource log;
 
 		private void Awake()
 		{
+			log = Logger;
 			// Plugin startup logic
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 
@@ -19,6 +21,7 @@ namespace SuisHack
 			Harmony.DEBUG = true;
 #pragma warning restore CS0618 // Type or member is obsolete
 #endif
+			//UnityReflections.Initialize();
 			harmonyInstance.PatchAll();
 
 		}

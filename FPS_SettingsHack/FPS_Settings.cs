@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace SuisHack.FPS_SettingsHack
 {
@@ -16,7 +17,7 @@ namespace SuisHack.FPS_SettingsHack
 			if (___menuListGroup.selectAbles != null && ___menuListGroup.selectAbles.Count > 9)
 			{
 				var leftRight = (LeftRightSelectable)___menuListGroup.selectAbles[9];
-				var screenDisplayRefreshRates = new int[] { 30, 60, 120, 144, 165, 240 }; //Screen.resolutions.Select(x => x.refreshRate).Distinct().OrderBy(x => x).ToArray();
+				var screenDisplayRefreshRates = new int[] { 30, 60, 120, 144, 165, 240, 99999 }; //Screen.resolutions.Select(x => x.refreshRate).Distinct().OrderBy(x => x).ToArray();
 				indexToRefreshRate.Clear();
 
 				leftRight.selectData = new LeftRightSelectable.SelectData[screenDisplayRefreshRates.Length];
@@ -49,9 +50,27 @@ namespace SuisHack.FPS_SettingsHack
 		static bool OnValueChangeFrameDetour(ref bool ___mModify, ref MenuListGroup ___menuListGroup)
 		{
 			___mModify = true;
+			var desiredFramerate = indexToRefreshRate[(___menuListGroup.selectAbles[9] as LeftRightSelectable).SelectIndex];
 			Global.config.frameRates = indexToRefreshRate[(___menuListGroup.selectAbles[9] as LeftRightSelectable).SelectIndex];
 			Global.SetFrame();
 			return false;
 		}
+
+/*		[HarmonyPrefix]
+		[HarmonyPatch(typeof(SystemManager), nameof(SystemManager.SetFrameRate))]
+		static bool DetouredGlobal(int frameRate)
+		{			
+			if (frameRate == -1)
+			{
+				QualitySettings.vSyncCount = 1;
+				Application.targetFrameRate = 0;
+			}
+			else
+			{
+				QualitySettings.vSyncCount = 0;
+				Application.targetFrameRate = frameRate;
+			}
+			return false;
+		}*/
 	}
 }

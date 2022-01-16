@@ -17,7 +17,7 @@ namespace SuisHack.FPS_SettingsHack
 			if (___menuListGroup.selectAbles != null && ___menuListGroup.selectAbles.Count > 9)
 			{
 				var leftRight = (LeftRightSelectable)___menuListGroup.selectAbles[9];
-				var screenDisplayRefreshRates = new int[] { 30, 60, 120, 144, 165, 240, 99999 }; //Screen.resolutions.Select(x => x.refreshRate).Distinct().OrderBy(x => x).ToArray();
+				var screenDisplayRefreshRates = new int[] { 30, 60, 120, 144, 165, 240 }; //Screen.resolutions.Select(x => x.refreshRate).Distinct().OrderBy(x => x).ToArray();
 				indexToRefreshRate.Clear();
 
 				leftRight.selectData = new LeftRightSelectable.SelectData[screenDisplayRefreshRates.Length];

@@ -107,4 +107,8 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Input\" />
+  </ItemGroup>
 </Project>

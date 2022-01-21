@@ -13,3 +13,6 @@
 * Extract the zip archive and move it to the game's directory.
 * Download [Sui's Hack](https://github.com/SuiMachine/White-Day---Sui-s-Hack/releases).
 * Move ``SuisHack.dll`` to ``<game folder>/BepInEx/plugins``.
+
+# Known issues
+* Crouch movement doesn't work with increased FPS

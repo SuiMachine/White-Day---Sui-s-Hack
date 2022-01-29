@@ -21,9 +21,8 @@ namespace SuisHack
 			Harmony.DEBUG = true;
 #pragma warning restore CS0618 // Type or member is obsolete
 #endif
-			//UnityReflections.Initialize();
-			harmonyInstance.PatchAll();
-
+			//Cheat.EnableCheats.InjectEarly(harmonyInstance);
+			FPS_SettingsHack.FPS_Settings.InjectEarly(harmonyInstance);
 		}
 	}
 }

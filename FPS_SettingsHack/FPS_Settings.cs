@@ -8,6 +8,13 @@ namespace SuisHack.FPS_SettingsHack
 	[HarmonyPatch]
 	class FPS_Settings
 	{
+		internal static void InjectEarly(Harmony harmonyInstance)
+		{
+			harmonyInstance.Patch(typeof(UILanguageSetting).GetMethod("OnEnable", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance), postfix:new HarmonyMethod(typeof(FPS_Settings).GetMethod(nameof(addOptions), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)));
+			harmonyInstance.Patch(typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance), postfix: new HarmonyMethod(typeof(FPS_Settings).GetMethod(nameof(OnValueChangeFrameDetour), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)));
+		}
+
+
 		static Dictionary<int, int> indexToRefreshRate = new Dictionary<int, int>();
 
 		[HarmonyPostfix]
@@ -55,22 +62,5 @@ namespace SuisHack.FPS_SettingsHack
 			Global.SetFrame();
 			return false;
 		}
-
-/*		[HarmonyPrefix]
-		[HarmonyPatch(typeof(SystemManager), nameof(SystemManager.SetFrameRate))]
-		static bool DetouredGlobal(int frameRate)
-		{			
-			if (frameRate == -1)
-			{
-				QualitySettings.vSyncCount = 1;
-				Application.targetFrameRate = 0;
-			}
-			else
-			{
-				QualitySettings.vSyncCount = 0;
-				Application.targetFrameRate = frameRate;
-			}
-			return false;
-		}*/
 	}
 }

@@ -9,6 +9,7 @@ namespace SuisHack.FPS_SettingsHack
 	{
 		static Dictionary<int, int> indexToRefreshRate = new Dictionary<int, int>();
 
+
 		public static void InjectEarly(Harmony harmonyInstance)
 		{
 			{
@@ -18,9 +19,9 @@ namespace SuisHack.FPS_SettingsHack
 			}
 
 			{
-				var originalMethod = typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance);
+				var originalMethod = typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 				var detourMethod = typeof(FPS_Settings).GetMethod(nameof(OnValueChangeFrameDetour), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-				harmonyInstance.Patch(originalMethod, postfix: new HarmonyMethod(detourMethod));
+				harmonyInstance.Patch(originalMethod, prefix: new HarmonyMethod(detourMethod));
 			}
 		}
 

@@ -1,21 +1,28 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace SuisHack.FPS_SettingsHack
 {
 	[HarmonyPatch]
 	class FPS_Settings
 	{
-		internal static void InjectEarly(Harmony harmonyInstance)
-		{
-			harmonyInstance.Patch(typeof(UILanguageSetting).GetMethod("OnEnable", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance), postfix:new HarmonyMethod(typeof(FPS_Settings).GetMethod(nameof(addOptions), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)));
-			harmonyInstance.Patch(typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance), postfix: new HarmonyMethod(typeof(FPS_Settings).GetMethod(nameof(OnValueChangeFrameDetour), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)));
-		}
-
-
 		static Dictionary<int, int> indexToRefreshRate = new Dictionary<int, int>();
+
+		public static void InjectEarly(Harmony harmonyInstance)
+		{
+			{
+				var originalMethod = typeof(UILanguageSetting).GetMethod("OnEnable", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var detourMethod = typeof(FPS_Settings).GetMethod(nameof(addOptions), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+				harmonyInstance.Patch(originalMethod, postfix: new HarmonyMethod(detourMethod));
+			}
+
+			{
+				var originalMethod = typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance);
+				var detourMethod = typeof(FPS_Settings).GetMethod(nameof(OnValueChangeFrameDetour), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+				harmonyInstance.Patch(originalMethod, postfix: new HarmonyMethod(detourMethod));
+			}
+		}
 
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(UILanguageSetting), "OnEnable")]

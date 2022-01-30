@@ -30,6 +30,10 @@
   </ItemGroup>
   
   <ItemGroup>
+     <Reference Include="UnityEngine">
+      <HintPath>G:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
     <Reference Include="0Harmony">
       <HintPath>G:\Steam\steamapps\common\White Day a labyrinth named school\BepInEx\core\0Harmony.dll</HintPath>
       <Private>false</Private>
@@ -41,10 +45,6 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>G:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>G:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.dll</HintPath>
-      <Aliases>UnityEngineOrg</Aliases>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>G:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.UI.dll</HintPath>

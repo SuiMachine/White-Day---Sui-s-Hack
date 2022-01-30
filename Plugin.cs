@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using SuisHack.FPS_SettingsHack;
 
 namespace SuisHack
 {
@@ -21,8 +22,14 @@ namespace SuisHack
 			Harmony.DEBUG = true;
 #pragma warning restore CS0618 // Type or member is obsolete
 #endif
-			//Cheat.EnableCheats.InjectEarly(harmonyInstance);
-			FPS_SettingsHack.FPS_Settings.InjectEarly(harmonyInstance);
+			Cheat.EnableCheats.InjectEarly(harmonyInstance);
+			Cheat.SecurityGuardCheat.InjectEarly(harmonyInstance);
+			FPS_Settings.InjectEarly(harmonyInstance);
+		}
+
+		private void Start()
+		{
+			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 		}
 	}
 }

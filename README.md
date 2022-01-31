@@ -5,6 +5,7 @@
  * Adds 120, 144, 165 and 240 FPS to the settings menu.
  * Option to enable god mode (disabled by default) that is hidden in game's libraries.
  * Option to hook code for security guard (janitor) view sight, so he ignores you. 
+ * Option to hook code responsible for stemina (breath), so you don't get tired from running. 
 
 # Requirements
 * The official copy of the game

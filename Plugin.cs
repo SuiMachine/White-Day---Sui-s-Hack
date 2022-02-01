@@ -35,14 +35,15 @@ namespace SuisHack
 			Harmony.DEBUG = true;
 #pragma warning restore CS0618 // Type or member is obsolete
 #endif
-			if(Config_Cheat_GodMode.Value)
+			FPS_Settings.InjectEarly(harmonyInstance);
+			MouseInvert.InjectEarly(harmonyInstance);
+
+			if (Config_Cheat_GodMode.Value)
 				Cheat.EnableCheats.InjectEarly(harmonyInstance);
 			if (Config_Cheat_DisableGuardSight.Value)
 				Cheat.SecurityGuardCheat.InjectEarly(harmonyInstance);
 			if (Config_Cheat_DisableStamina.Value)
 				Cheat.StaminaCheat.InjectEarly(harmonyInstance);
-
-			FPS_Settings.InjectEarly(harmonyInstance);
 		}
 
 		private void Start()

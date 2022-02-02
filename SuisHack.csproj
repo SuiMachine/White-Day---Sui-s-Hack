@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
     <AssemblyName>SuisHack</AssemblyName>
-    <Description>My first plugin</Description>
+    <Description>Hack for White Day: A Labyrinth Named School</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>

@@ -10,7 +10,7 @@
 
 # Requirements
 * The official copy of the game
-* [BepInEx UnityMono x64 6.x](https://builds.bepis.io/projects/bepinex_be) and HarmonyX
+* [BepInEx UnityMono x64 6.x](https://builds.bepinex.dev/projects/bepinex_be) and HarmonyX
 
 # Installation
 * Download [BepInEx 6.x UnityMono x64](https://builds.bepinex.dev/projects/bepinex_be).

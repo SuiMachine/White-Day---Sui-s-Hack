@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net40</TargetFramework>
+    <AssemblyName>SuisHack</AssemblyName>
+    <Description>My first plugin</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>F:\Steam\steamapps\common\White Day a labyrinth named school\BepInEx\plugins\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Unity" Version="6.0.0-*" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+	<PackageReference Include="UnityEngine.Modules" Version="5.5.3" IncludeAssets="compile" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+    </Reference>
+    <Reference Include="Assembly-UnityScript">
+      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-UnityScript.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+    </Reference>
+  </ItemGroup>
+</Project>

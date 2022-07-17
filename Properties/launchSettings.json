@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "BepInEx6.PluginTemplate.UnityMono": {
-      "commandName": "Project"
-    }
-  }
-}

@@ -41,7 +41,7 @@ namespace SuisHack
 			FPS_Settings.InjectEarly(harmonyInstance);
 
 			if(Config_Input_InvertYAxis.Value)
-				MouseInvert.InjectEarly(harmonyInstance);
+				PlayerBehaviourPatches.InjectEarly(harmonyInstance);
 			if (Config_Cheat_GodMode.Value)
 				Cheat.EnableCheats.InjectEarly(harmonyInstance);
 			if (Config_Cheat_DisableGuardSight.Value)

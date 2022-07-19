@@ -13,7 +13,7 @@
 * [BepInEx UnityMono x64 6.x](https://builds.bepinex.dev/projects/bepinex_be) and HarmonyX
 
 # Installation
-* Download [BepInEx 6.x UnityMono x64](https://builds.bepinex.dev/projects/bepinex_be).
+* Download [BepInEx 5.x x64](https://github.com/BepInEx/BepInEx/releases).
 * Extract the zip archive and move it to the game's directory.
 * Download [Sui's Hack](https://github.com/SuiMachine/White-Day---Sui-s-Hack/releases).
 * Move ``SuisHack.dll`` to ``<game folder>/BepInEx/plugins``.

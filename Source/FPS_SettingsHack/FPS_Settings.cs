@@ -9,22 +9,6 @@ namespace SuisHack.FPS_SettingsHack
 	{
 		static Dictionary<int, int> indexToRefreshRate = new Dictionary<int, int>();
 
-
-		public static void InjectEarly(Harmony harmonyInstance)
-		{
-			{
-				var originalMethod = typeof(UILanguageSetting).GetMethod("OnEnable", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var detourMethod = typeof(FPS_Settings).GetMethod(nameof(addOptions), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-				harmonyInstance.Patch(originalMethod, postfix: new HarmonyMethod(detourMethod));
-			}
-
-			{
-				var originalMethod = typeof(UILanguageSetting).GetMethod("OnValueChangeFrame", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-				var detourMethod = typeof(FPS_Settings).GetMethod(nameof(OnValueChangeFrameDetour), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-				harmonyInstance.Patch(originalMethod, prefix: new HarmonyMethod(detourMethod));
-			}
-		}
-
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(UILanguageSetting), "OnEnable")]
 		static void addOptions(ref MenuListGroup ___menuListGroup)

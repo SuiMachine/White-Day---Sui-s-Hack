@@ -23,6 +23,8 @@ namespace SuisHack
 			Config_Cheat_GodMode = Config.Bind("Cheats", "GodMode", false);
 			Config_Cheat_DisableGuardSight = Config.Bind("Cheats", "DisableGuardsSight", false);
 			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
+			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", true).Value;
+
 		}
 
 		private void Awake()

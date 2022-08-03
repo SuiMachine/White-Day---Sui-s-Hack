@@ -2,7 +2,6 @@
 
 namespace SuisHack.Cheat
 {
-	[HarmonyPatch]
 	class SecurityGuardCheat
 	{
 		internal static void InjectEarly(Harmony harmonyInstance)

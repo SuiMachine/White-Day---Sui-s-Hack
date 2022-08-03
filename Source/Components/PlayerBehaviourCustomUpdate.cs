@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SuisHack.Components
 {
-	public class PlayerBehaviourCustomUpdate : MonoBehaviour, Interfaces.IInterpolateGameObject
+	public class PlayerBehaviourCustomUpdate : MonoBehaviour
 	{
 		PlayerBehaviour playerBehaviourRef;
 		FieldInfo forcedMoving;
@@ -35,20 +35,22 @@ namespace SuisHack.Components
 
 		void OnEnable()
 		{
-			if (GameManager.instance.mainCamera.GetComponent<CameraRenderInterpolation>() == null)
-			{
-				GameManager.instance.mainCamera.gameObject.AddComponent<CameraRenderInterpolation>();
-			}
-			CameraRenderInterpolation.RegisterObject(this);
+			ClearHistory();
 		}
 
-
-		void OnDisable() => CameraRenderInterpolation.UnregisterObject(this);
+		private void ClearHistory()
+		{
+			for (int i = 0; i < history.Length; i++)
+			{
+				history[i] = new PositionHistory();
+			}
+		}
 
 		void Update()
 		{
 			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
 			{
+				ClearHistory();
 				return;
 			}
 
@@ -86,6 +88,8 @@ namespace SuisHack.Components
 					GameManager.instance.mainCamera.localRotation.x = ((standingValue != PlayerBehaviour.StandingState.Standing) ? Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -30f, 60f) : Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -40f, 80f));
 					GameManager.instance.mainCamera.localRotation.y = 0f;
 				}
+
+				SetInterpolatedPosition();
 			}
 		}
 
@@ -93,7 +97,7 @@ namespace SuisHack.Components
 		{
 			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
 			{
-				RegisterPosition();
+				ClearHistory();
 				return;
 			}
 
@@ -187,11 +191,9 @@ namespace SuisHack.Components
 		}
 
 		public PositionHistory[] history = new PositionHistory[2];
-		bool wasColliderActive = true;
 
 		public void SetInterpolatedPosition()
 		{
-			wasColliderActive = playerBehaviourRef.charController.enabled;
 			if (!history[0].WasActive || !history[1].WasActive)
 				return;
 
@@ -200,24 +202,22 @@ namespace SuisHack.Components
 
 			if (newerTime != olderTime)
 			{
-				playerBehaviourRef.charController.enabled = false;
 				var interpolationFactor = (Time.time - newerTime) / (newerTime - olderTime);
-				this.transform.position = Vector3.LerpUnclamped(history[1].Position, history[0].Position, interpolationFactor);
+				playerBehaviourRef.transform.position = Vector3.LerpUnclamped(history[1].Position, history[0].Position, interpolationFactor);
+				Plugin.log.LogMessage($"Interpolation: {interpolationFactor} - position {this.transform.position}");
+
 				//this.transform.rotation = Quaternion.LerpUnclamped(history[1].Rotation, history[0].Rotation, interpolationFactor);
-				this.transform.localScale = Vector3.LerpUnclamped(history[1].LocalScale, history[0].LocalScale, interpolationFactor);
+				playerBehaviourRef.transform.localScale = Vector3.LerpUnclamped(history[1].LocalScale, history[0].LocalScale, interpolationFactor);
 			}
+			StartCoroutine(RestoreOriginal());
 		}
 
-		public void RestoreOriginal()
+		private System.Collections.IEnumerator RestoreOriginal()
 		{
-			if (!history[0].WasActive || !history[1].WasActive)
-				return;
-
-			playerBehaviourRef.charController.enabled = wasColliderActive;
-
-			this.transform.position = history[0].Position;
+			yield return new WaitForEndOfFrame();
+			playerBehaviourRef.transform.position = history[0].Position;
 			//this.transform.rotation = history[0].Rotation;
-			this.transform.localScale = history[0].LocalScale;
+			playerBehaviourRef.transform.localScale = history[0].LocalScale;
 		}
 	}
 }

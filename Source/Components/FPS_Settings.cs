@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace SuisHack.FPS_SettingsHack
+namespace SuisHack.Components
 {
 	[HarmonyPatch]
 	class FPS_Settings

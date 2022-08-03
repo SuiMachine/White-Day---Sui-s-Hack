@@ -1,10 +1,11 @@
 ﻿using HarmonyLib;
+using SuisHack.Components.Structs;
 using System.Reflection;
 using UnityEngine;
 
-namespace SuisHack.FPS_SettingsHack
+namespace SuisHack.Components
 {
-	public class PlayerBehaviourCustomUpdate : MonoBehaviour
+	public class PlayerBehaviourCustomUpdate : MonoBehaviour, Interfaces.IInterpolateGameObject
 	{
 		PlayerBehaviour playerBehaviourRef;
 		FieldInfo forcedMoving;
@@ -17,9 +18,7 @@ namespace SuisHack.FPS_SettingsHack
 		MethodInfo standingStateGetter;
 		MethodInfo standingStateSetter;
 
-
-
-		public void Awake()
+		void Awake()
 		{
 			playerBehaviourRef = GetComponent<PlayerBehaviour>();
 			forcedMoving = typeof(PlayerBehaviour).GetField("forcedMoving", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -33,6 +32,18 @@ namespace SuisHack.FPS_SettingsHack
 			isMoving = AccessTools.PropertySetter(typeof(CharacterBehaviour), "isMoving");
 			isRun = AccessTools.PropertySetter(typeof(CharacterBehaviour), "isRun");
 		}
+
+		void OnEnable()
+		{
+			if (GameManager.instance.mainCamera.GetComponent<CameraRenderInterpolation>() == null)
+			{
+				GameManager.instance.mainCamera.gameObject.AddComponent<CameraRenderInterpolation>();
+			}
+			CameraRenderInterpolation.RegisterObject(this);
+		}
+
+
+		void OnDisable() => CameraRenderInterpolation.UnregisterObject(this);
 
 		void Update()
 		{
@@ -82,6 +93,7 @@ namespace SuisHack.FPS_SettingsHack
 		{
 			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
 			{
+				RegisterPosition();
 				return;
 			}
 
@@ -117,6 +129,16 @@ namespace SuisHack.FPS_SettingsHack
 
 			this.isMoving.Invoke(playerBehaviourRef, new object[] { isMoving });
 			this.isRun.Invoke(playerBehaviourRef, new object[] { isRun });
+			RegisterPosition(playerBehaviourRef.transform);
+		}
+
+		private void RegisterPosition(Transform t = null)
+		{
+			history[1] = history[0];
+			if (t == null)
+				history[0] = new PositionHistory();
+			else
+				history[0] = new PositionHistory(t);
 		}
 
 		private Vector3 UpdateMoveControlStandAlone(ref bool moving, ref bool running)
@@ -162,6 +184,40 @@ namespace SuisHack.FPS_SettingsHack
 			}
 
 			return fullMovement;
+		}
+
+		public PositionHistory[] history = new PositionHistory[2];
+		bool wasColliderActive = true;
+
+		public void SetInterpolatedPosition()
+		{
+			wasColliderActive = playerBehaviourRef.charController.enabled;
+			if (!history[0].WasActive || !history[1].WasActive)
+				return;
+
+			float newerTime = history[0].StoredTime;
+			float olderTime = history[1].StoredTime;
+
+			if (newerTime != olderTime)
+			{
+				playerBehaviourRef.charController.enabled = false;
+				var interpolationFactor = (Time.time - newerTime) / (newerTime - olderTime);
+				this.transform.position = Vector3.LerpUnclamped(history[1].Position, history[0].Position, interpolationFactor);
+				//this.transform.rotation = Quaternion.LerpUnclamped(history[1].Rotation, history[0].Rotation, interpolationFactor);
+				this.transform.localScale = Vector3.LerpUnclamped(history[1].LocalScale, history[0].LocalScale, interpolationFactor);
+			}
+		}
+
+		public void RestoreOriginal()
+		{
+			if (!history[0].WasActive || !history[1].WasActive)
+				return;
+
+			playerBehaviourRef.charController.enabled = wasColliderActive;
+
+			this.transform.position = history[0].Position;
+			//this.transform.rotation = history[0].Rotation;
+			this.transform.localScale = history[0].LocalScale;
 		}
 	}
 }

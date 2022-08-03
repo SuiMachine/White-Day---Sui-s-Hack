@@ -1,7 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
-using SuisHack.FPS_SettingsHack;
+using SuisHack.Components;
 
 namespace SuisHack
 {

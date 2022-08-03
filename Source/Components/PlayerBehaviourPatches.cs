@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace SuisHack.FPS_SettingsHack
+namespace SuisHack.Components
 {
 	[HarmonyPatch]
 	public static class PlayerBehaviourPatches

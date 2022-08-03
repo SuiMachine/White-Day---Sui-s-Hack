@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using HarmonyLib;
+using System.Reflection;
 using UnityEngine;
 
 namespace SuisHack.FPS_SettingsHack
@@ -8,22 +9,29 @@ namespace SuisHack.FPS_SettingsHack
 		PlayerBehaviour playerBehaviourRef;
 		FieldInfo forcedMoving;
 		FieldInfo layerMask;
-		PropertyInfo standingState;
-		PropertyInfo maxAngularVelocity;
+		MethodInfo maxAngularVelocity;
+		MethodInfo isMoving;
+		MethodInfo isRun;
+		MethodInfo UpdateControlStandAloneMethodRef;
+		MethodInfo UpdateControlQuickTurnRef;
+		MethodInfo standingStateGetter;
+		MethodInfo standingStateSetter;
 
 
-		private static MethodInfo UpdateControlStandAloneMethodRef;
-		private static MethodInfo UpdateControlQuickTurnRef;
 
 		public void Awake()
 		{
 			playerBehaviourRef = GetComponent<PlayerBehaviour>();
 			forcedMoving = typeof(PlayerBehaviour).GetField("forcedMoving", BindingFlags.Instance | BindingFlags.NonPublic);
 			layerMask = typeof(PlayerBehaviour).GetField("layerMask", BindingFlags.Instance | BindingFlags.NonPublic);
-			standingState = typeof(PlayerBehaviour).GetProperty("standingState", BindingFlags.Instance | BindingFlags.NonPublic);
-			maxAngularVelocity = typeof(PlayerBehaviour).GetProperty("maxAngularVelocity", BindingFlags.Instance | BindingFlags.NonPublic);
 			UpdateControlStandAloneMethodRef = typeof(PlayerBehaviour).GetMethod("UpdateControlStandAlone", BindingFlags.NonPublic | BindingFlags.Instance);
 			UpdateControlQuickTurnRef = typeof(PlayerBehaviour).GetMethod("UpdateControlQuickTurn", BindingFlags.NonPublic | BindingFlags.Instance);
+
+			standingStateGetter = AccessTools.PropertyGetter(typeof(PlayerBehaviour), "standingState");
+			standingStateSetter = AccessTools.PropertySetter(typeof(PlayerBehaviour), "standingState");
+			maxAngularVelocity = AccessTools.PropertyGetter(typeof(PlayerBehaviour), "maxAngularVelocity");
+			isMoving = AccessTools.PropertySetter(typeof(CharacterBehaviour), "isMoving");
+			isRun = AccessTools.PropertySetter(typeof(CharacterBehaviour), "isRun");
 		}
 
 		void Update()
@@ -33,34 +41,38 @@ namespace SuisHack.FPS_SettingsHack
 				return;
 			}
 
-			var forcedMoving = (bool)this.forcedMoving.GetValue(playerBehaviourRef);
 			if (!playerBehaviourRef.ignoreInput)
 			{
+				var forcedMoving = (bool)this.forcedMoving.GetValue(playerBehaviourRef);
+
 				if (!playerBehaviourRef.isDead && !forcedMoving && !Cursor.visible && !GameManager.instance.UI.IsActivePanel && GameManager.isLoadingComplete && !GameManager.instance.isCinemaState && GameManager.instance.mainCamera.camera.enabled && GameManager.instance.UI.virtualPad.gameObject.activeInHierarchy && !GameManager.instance.player.isDead)
 				{
 					UpdateControlStandAloneMethodRef.Invoke(playerBehaviourRef, null);
 					UpdateControlQuickTurnRef.Invoke(playerBehaviourRef, null);
 
-					Vector2 rotationMouse = Vector2.zero;
+					Vector2 rotation = Vector2.zero;
 					float axis = Input.GetAxis(Global.config.JoystickAxisTrigger);
-					float num;
-					float num2;
+					float rotationGamepadY;
+					float rotationGamepadX;
 					if (axis < -0.5f)
 					{
-						num = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") / 2f) : (Input.GetAxis("JoystickAxis5") / 2f));
-						num2 = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") / 2f) : (-Input.GetAxis("JoystickAxis4") / 2f));
+						rotationGamepadY = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") / 2f) : (Input.GetAxis("JoystickAxis5") / 2f));
+						rotationGamepadX = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") / 2f) : (-Input.GetAxis("JoystickAxis4") / 2f));
 					}
 					else
 					{
-						num = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f) : (Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f));
-						num2 = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f) : (-Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f));
+						rotationGamepadY = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f) : (Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f));
+						rotationGamepadX = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f) : (-Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f));
 					}
-					rotationMouse.Set(Input.GetAxis("Mouse X") + num2, Input.GetAxis("Mouse Y") + num);
-					rotationMouse *= Global.config.controlSensitivity * 2f;
-					playerBehaviourRef.transform.rotation = Quaternion.Euler(0f, rotationMouse.x, 0f) * playerBehaviourRef.transform.rotation;
-					float fmaxAngularVelocity = (float)maxAngularVelocity.GetValue(playerBehaviourRef, null);
-					float horizontalRotation = Mathf.Clamp(rotationMouse.y, -fmaxAngularVelocity, fmaxAngularVelocity);
-					GameManager.instance.mainCamera.localRotation.x = (((PlayerBehaviour.StandingState)standingState.GetValue(playerBehaviourRef, null) != PlayerBehaviour.StandingState.Standing) ? Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - horizontalRotation - num, -30f, 60f) : Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - horizontalRotation - num, -40f, 80f));
+					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, Input.GetAxis("Mouse Y") + rotationGamepadY);
+					rotation *= Global.config.controlSensitivity * 2f;
+					playerBehaviourRef.transform.rotation = Quaternion.Euler(0f, rotation.x, 0f) * playerBehaviourRef.transform.rotation;
+					var fMaxAngularVelocity = (float)maxAngularVelocity.Invoke(playerBehaviourRef, new object[] { });
+					float num3 = Mathf.Clamp(rotation.y, -fMaxAngularVelocity, fMaxAngularVelocity);
+
+					var standingValue = (PlayerBehaviour.StandingState)standingStateGetter.Invoke(playerBehaviourRef, new object[] { });
+
+					GameManager.instance.mainCamera.localRotation.x = ((standingValue != PlayerBehaviour.StandingState.Standing) ? Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -30f, 60f) : Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -40f, 80f));
 					GameManager.instance.mainCamera.localRotation.y = 0f;
 				}
 			}
@@ -68,7 +80,7 @@ namespace SuisHack.FPS_SettingsHack
 
 		void FixedUpdate()
 		{
-			if(!GameManager.isLoadingComplete || playerBehaviourRef == null)
+			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
 			{
 				return;
 			}
@@ -85,11 +97,11 @@ namespace SuisHack.FPS_SettingsHack
 				{
 					movement += UpdateMoveControlStandAlone(ref isMoving, ref isRun);
 				}
-				if(playerBehaviourRef.enableMoving)
+				if (playerBehaviourRef.enableMoving)
 				{
 					playerBehaviourRef.charController.Move(movement * Time.fixedDeltaTime);
 				}
-				if(playerBehaviourRef.bindedObject != null && playerBehaviourRef.bindingCollision)
+				if (playerBehaviourRef.bindedObject != null && playerBehaviourRef.bindingCollision)
 				{
 					float num = 0.2f;
 					float num2 = 0.6f;
@@ -103,8 +115,8 @@ namespace SuisHack.FPS_SettingsHack
 				}
 			}
 
-/*			playerBehaviourRef.isMoving = isMoving;
-			playerBehaviourRef.isRun = isRun;*/
+			this.isMoving.Invoke(playerBehaviourRef, new object[] { isMoving });
+			this.isRun.Invoke(playerBehaviourRef, new object[] { isRun });
 		}
 
 		private Vector3 UpdateMoveControlStandAlone(ref bool moving, ref bool running)
@@ -133,7 +145,7 @@ namespace SuisHack.FPS_SettingsHack
 				}
 				if (playerBehaviourRef.standingState == PlayerBehaviour.StandingState.Hiding && running)
 				{
-					this.standingState.SetValue(playerBehaviourRef, PlayerBehaviour.StandingState.Standing, null);
+					this.standingStateGetter.Invoke(playerBehaviourRef, new object[] { PlayerBehaviour.StandingState.Standing });
 				}
 				if (playerBehaviourRef.standingState != PlayerBehaviour.StandingState.Standing)
 				{

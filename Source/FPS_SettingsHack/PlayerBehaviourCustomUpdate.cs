@@ -145,7 +145,7 @@ namespace SuisHack.FPS_SettingsHack
 				}
 				if (playerBehaviourRef.standingState == PlayerBehaviour.StandingState.Hiding && running)
 				{
-					this.standingStateGetter.Invoke(playerBehaviourRef, new object[] { PlayerBehaviour.StandingState.Standing });
+					this.standingStateSetter.Invoke(playerBehaviourRef, new object[] { PlayerBehaviour.StandingState.Standing });
 				}
 				if (playerBehaviourRef.standingState != PlayerBehaviour.StandingState.Standing)
 				{

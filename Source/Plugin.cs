@@ -14,9 +14,12 @@ namespace SuisHack
 		private readonly ConfigEntry<bool> Config_Cheat_GodMode;
 		private readonly ConfigEntry<bool> Config_Cheat_DisableGuardSight;
 		private readonly ConfigEntry<bool> Config_Cheat_DisableStamina;
+		public static ConfigEntry<bool> Config_Increase_RefreshRateByOne;
 
 		public Plugin()
 		{
+			Config_Increase_RefreshRateByOne = Config.Bind("General", "Increase refresh rate by one", false, new ConfigDescription("This is a workaround for an issue related to refresh rate, where some monitors instead of using - let's say - 240Hz refresh as advertised, report something dumb like 239.958 Hz (I am looking at you Samsung!). As Unity expects integers are refresh rate, this then ends up being 239 Hz, so this option increases it by 1 as a workaround."));
+
 			Config_Cheat_GodMode = Config.Bind("Cheats", "GodMode", false);
 			Config_Cheat_DisableGuardSight = Config.Bind("Cheats", "DisableGuardsSight", false);
 			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
@@ -25,7 +28,6 @@ namespace SuisHack
 		private void Awake()
 		{
 			log = Logger;
-
 
 			// Plugin startup logic
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
@@ -38,19 +40,14 @@ namespace SuisHack
 #endif
 			HarmonyInstance.PatchAll();
 
-			PlayerBehaviourPatches.Initialize();
-
 			if (Config_Cheat_GodMode.Value)
 				Cheat.EnableCheats.InjectEarly(HarmonyInstance);
 			if (Config_Cheat_DisableGuardSight.Value)
 				Cheat.SecurityGuardCheat.InjectEarly(HarmonyInstance);
 			if (Config_Cheat_DisableStamina.Value)
 				Cheat.StaminaCheat.InjectEarly(HarmonyInstance);
-		}
+			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} finished loading loaded!");
 
-		private void Start()
-		{
-			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
 		}
 	}
 }

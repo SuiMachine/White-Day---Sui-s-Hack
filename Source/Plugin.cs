@@ -23,8 +23,7 @@ namespace SuisHack
 			Config_Cheat_GodMode = Config.Bind("Cheats", "GodMode", false);
 			Config_Cheat_DisableGuardSight = Config.Bind("Cheats", "DisableGuardsSight", false);
 			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
-			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", true).Value;
-
+			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", false).Value;
 		}
 
 		private void Awake()
@@ -49,7 +48,6 @@ namespace SuisHack
 			if (Config_Cheat_DisableStamina.Value)
 				Cheat.StaminaCheat.InjectEarly(HarmonyInstance);
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} finished loading loaded!");
-
 		}
 	}
 }

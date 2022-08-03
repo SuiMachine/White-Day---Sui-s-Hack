@@ -77,7 +77,7 @@ namespace SuisHack.Components
 						rotationGamepadY = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f) : (Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f));
 						rotationGamepadX = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f) : (-Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f));
 					}
-					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, Input.GetAxis("Mouse Y") + rotationGamepadY);
+					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, (Global.config.JoyPadVertivalReversal ? - Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y"))  + rotationGamepadY);
 					rotation *= Global.config.controlSensitivity * 2f;
 					playerBehaviourRef.transform.rotation = Quaternion.Euler(0f, rotation.x, 0f) * playerBehaviourRef.transform.rotation;
 					var fMaxAngularVelocity = (float)maxAngularVelocity.Invoke(playerBehaviourRef, new object[] { });
@@ -88,9 +88,13 @@ namespace SuisHack.Components
 					GameManager.instance.mainCamera.localRotation.x = ((standingValue != PlayerBehaviour.StandingState.Standing) ? Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -30f, 60f) : Mathf.Clamp(GameManager.instance.mainCamera.localRotation.x - num3 - rotationGamepadY, -40f, 80f));
 					GameManager.instance.mainCamera.localRotation.y = 0f;
 				}
+				else
+					ClearHistory();
 
 				SetInterpolatedPosition();
 			}
+			else
+				ClearHistory();
 		}
 
 		void FixedUpdate()
@@ -113,10 +117,16 @@ namespace SuisHack.Components
 				{
 					movement += UpdateMoveControlStandAlone(ref isMoving, ref isRun);
 				}
+				else
+					ClearHistory();
+
 				if (playerBehaviourRef.enableMoving)
 				{
 					playerBehaviourRef.charController.Move(movement * Time.fixedDeltaTime);
 				}
+				else
+					ClearHistory();
+
 				if (playerBehaviourRef.bindedObject != null && playerBehaviourRef.bindingCollision)
 				{
 					float num = 0.2f;
@@ -130,19 +140,18 @@ namespace SuisHack.Components
 					}
 				}
 			}
+			else
+				ClearHistory();
 
 			this.isMoving.Invoke(playerBehaviourRef, new object[] { isMoving });
 			this.isRun.Invoke(playerBehaviourRef, new object[] { isRun });
 			RegisterPosition(playerBehaviourRef.transform);
 		}
 
-		private void RegisterPosition(Transform t = null)
+		private void RegisterPosition(Transform t)
 		{
 			history[1] = history[0];
-			if (t == null)
-				history[0] = new PositionHistory();
-			else
-				history[0] = new PositionHistory(t);
+			history[0] = new PositionHistory(t);
 		}
 
 		private Vector3 UpdateMoveControlStandAlone(ref bool moving, ref bool running)
@@ -204,9 +213,6 @@ namespace SuisHack.Components
 			{
 				var interpolationFactor = (Time.time - newerTime) / (newerTime - olderTime);
 				playerBehaviourRef.transform.position = Vector3.LerpUnclamped(history[1].Position, history[0].Position, interpolationFactor);
-				Plugin.log.LogMessage($"Interpolation: {interpolationFactor} - position {this.transform.position}");
-
-				//this.transform.rotation = Quaternion.LerpUnclamped(history[1].Rotation, history[0].Rotation, interpolationFactor);
 				playerBehaviourRef.transform.localScale = Vector3.LerpUnclamped(history[1].LocalScale, history[0].LocalScale, interpolationFactor);
 			}
 			StartCoroutine(RestoreOriginal());
@@ -216,7 +222,6 @@ namespace SuisHack.Components
 		{
 			yield return new WaitForEndOfFrame();
 			playerBehaviourRef.transform.position = history[0].Position;
-			//this.transform.rotation = history[0].Rotation;
 			playerBehaviourRef.transform.localScale = history[0].LocalScale;
 		}
 	}

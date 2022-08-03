@@ -10,7 +10,7 @@ namespace SuisHack.Components
 		public static void OnAwakePostifx(ref PlayerBehaviour __instance)
 		{
 			__instance.gameObject.AddComponent<PlayerBehaviourCustomUpdate>();
-			Plugin.log.LogMessage("Added!");
+			//Plugin.log.LogMessage("Added!");
 		}
 
 		[HarmonyPrefix]

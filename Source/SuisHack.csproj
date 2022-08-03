@@ -14,6 +14,10 @@
     <OutputPath>F:\Steam\steamapps\common\White Day a labyrinth named school\BepInEx\plugins\</OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>E:\Projekty\White-Day---Sui-s-Hack\Release\BepInEx\plugins\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />

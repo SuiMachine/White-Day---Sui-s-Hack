@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
-using SuisHack.Components;
 
 namespace SuisHack
 {
@@ -24,6 +23,7 @@ namespace SuisHack
 			Config_Cheat_DisableGuardSight = Config.Bind("Cheats", "DisableGuardsSight", false);
 			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
 			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", false).Value;
+			Cheat.VeryHardDifficultySave.AllowSaveOnVeryHard = Config.Bind("Cheats", "AllowSavingOnVeryHardDifficulty", false).Value;
 		}
 
 		private void Awake()

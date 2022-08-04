@@ -24,6 +24,7 @@ namespace SuisHack
 			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
 			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", false).Value;
 			Cheat.VeryHardDifficultySave.AllowSaveOnVeryHard = Config.Bind("Cheats", "AllowSavingOnVeryHardDifficulty", false).Value;
+			Components.SettingsOverride.SetupConfig(Config);
 		}
 
 		private void Awake()
@@ -47,7 +48,15 @@ namespace SuisHack
 				Cheat.SecurityGuardCheat.InjectEarly(HarmonyInstance);
 			if (Config_Cheat_DisableStamina.Value)
 				Cheat.StaminaCheat.InjectEarly(HarmonyInstance);
+
+			Components.SettingsOverride.Initialize();
+
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} finished loading loaded!");
+		}
+
+		private void OnSceneLoad()
+		{
+
 		}
 	}
 }

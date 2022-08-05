@@ -56,7 +56,6 @@ namespace SuisHack.Components
 			{
 				GUILayout.BeginHorizontal();
 				GUILayout.BeginVertical(GUI.skin.box);
-
 				{
 					GUILayout.BeginHorizontal();
 					GUILayout.Label($"Anisotropic filtering ({QualitySettings.anisotropicFiltering}):");
@@ -69,6 +68,15 @@ namespace SuisHack.Components
 					GUILayout.EndHorizontal();
 				}
 				GUILayout.EndVertical();
+
+				GUILayout.BeginVertical(GUI.skin.box);
+				{
+					GUILayout.BeginHorizontal();
+					PlayerBehaviourPatches.UseInterpolation = GUILayout.Toggle(PlayerBehaviourPatches.UseInterpolation, "Character interpolation");
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.EndVertical();
+
 				GUILayout.EndHorizontal();
 			}
 		}

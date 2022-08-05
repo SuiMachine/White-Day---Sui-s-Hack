@@ -5,6 +5,8 @@ namespace SuisHack.Components
 	[HarmonyPatch]
 	public static class PlayerBehaviourPatches
 	{
+		public static bool UseInterpolation = true;
+
 		[HarmonyPostfix]
 		[HarmonyPatch(typeof(PlayerBehaviour), "OnAwake")]
 		public static void OnAwakePostifx(ref PlayerBehaviour __instance)
@@ -17,7 +19,10 @@ namespace SuisHack.Components
 		[HarmonyPatch(typeof(PlayerBehaviour), "UpdateMoveControl")]
 		public static bool UpdateMoveControlPrefix()
 		{
-			return false;
+			if (UseInterpolation)
+				return false;
+			else
+				return true;
 		}
 	}
 }

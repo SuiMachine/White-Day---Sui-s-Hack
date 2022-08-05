@@ -53,10 +53,5 @@ namespace SuisHack
 
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} finished loading loaded!");
 		}
-
-		private void OnSceneLoad()
-		{
-
-		}
 	}
 }

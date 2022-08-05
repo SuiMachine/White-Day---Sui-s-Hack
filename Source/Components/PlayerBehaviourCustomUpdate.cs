@@ -48,7 +48,7 @@ namespace SuisHack.Components
 
 		void Update()
 		{
-			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
+			if (!GameManager.isLoadingComplete || playerBehaviourRef == null || !PlayerBehaviourPatches.UseInterpolation)
 			{
 				ClearHistory();
 				return;
@@ -77,7 +77,7 @@ namespace SuisHack.Components
 						rotationGamepadY = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f) : (Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f));
 						rotationGamepadX = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f) : (-Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f));
 					}
-					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, (Global.config.JoyPadVertivalReversal ? - Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y"))  + rotationGamepadY);
+					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, (Global.config.JoyPadVertivalReversal ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) + rotationGamepadY);
 					rotation *= Global.config.controlSensitivity * 2f;
 					playerBehaviourRef.transform.rotation = Quaternion.Euler(0f, rotation.x, 0f) * playerBehaviourRef.transform.rotation;
 					var fMaxAngularVelocity = (float)maxAngularVelocity.Invoke(playerBehaviourRef, new object[] { });
@@ -99,7 +99,7 @@ namespace SuisHack.Components
 
 		void FixedUpdate()
 		{
-			if (!GameManager.isLoadingComplete || playerBehaviourRef == null)
+			if (!GameManager.isLoadingComplete || playerBehaviourRef == null || !PlayerBehaviourPatches.UseInterpolation)
 			{
 				ClearHistory();
 				return;

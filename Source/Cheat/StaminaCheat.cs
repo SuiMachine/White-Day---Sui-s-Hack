@@ -2,18 +2,17 @@
 
 namespace SuisHack.Cheat
 {
+	[HarmonyPatch]
 	class StaminaCheat
 	{
-		internal static void InjectEarly(Harmony harmonyInstance)
-		{
-			var originalMethod = typeof(GameManager).GetMethod("UpdateBreath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-			var detourMethod = typeof(StaminaCheat).GetMethod(nameof(UpdateBreathDetour), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-			harmonyInstance.Patch(originalMethod, prefix: new HarmonyMethod(detourMethod));
-		}
+		public static bool Use;
 
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(GameManager), nameof(GameManager.UpdateBreath))]
 		static void UpdateBreathDetour()
 		{
-			Global.playerInfo.breath = 100f;
+			if (Use)
+				Global.playerInfo.breath = 100f;
 		}
 	}
 }

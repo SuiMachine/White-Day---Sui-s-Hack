@@ -5,13 +5,13 @@ namespace SuisHack.Cheat
 	[HarmonyPatch]
 	public static class InventoryCheat
 	{
-		public static bool EnableSaveCheat;
+		public static bool UseUnlimitedSavePens;
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(PlayerInfo), nameof(PlayerInfo.HasItem))]
 		public static bool HasItemPrefix(ref bool __result, int itemID)
 		{
-			if (EnableSaveCheat && itemID == 40040)
+			if (UseUnlimitedSavePens && itemID == 40040)
 			{
 				__result = true;
 				return false;
@@ -23,7 +23,7 @@ namespace SuisHack.Cheat
 		[HarmonyPatch(typeof(PlayerInfo), nameof(PlayerInfo.GetItemQuantity))]
 		public static bool GetItemQuantityPrefix(ref int __result, int itemID)
 		{
-			if(EnableSaveCheat && itemID == 40040)
+			if(UseUnlimitedSavePens && itemID == 40040)
 			{
 				__result = 25;
 				return false;

@@ -10,20 +10,18 @@ namespace SuisHack
 		public static Harmony HarmonyInstance { get; private set; }
 		public static BepInEx.Logging.ManualLogSource log;
 
-		private readonly ConfigEntry<bool> Config_Cheat_GodMode;
-		private readonly ConfigEntry<bool> Config_Cheat_DisableGuardSight;
-		private readonly ConfigEntry<bool> Config_Cheat_DisableStamina;
 		public static ConfigEntry<bool> Config_Increase_RefreshRateByOne;
 
 		public Plugin()
 		{
 			Config_Increase_RefreshRateByOne = Config.Bind("General", "Increase refresh rate by one", false, new ConfigDescription("This is a workaround for an issue related to refresh rate, where some monitors instead of using - let's say - 240Hz refresh as advertised, report something dumb like 239.958 Hz (I am looking at you Samsung!). As Unity expects integers are refresh rate, this then ends up being 239 Hz, so this option increases it by 1 as a workaround."));
 
-			Config_Cheat_GodMode = Config.Bind("Cheats", "GodMode", false);
-			Config_Cheat_DisableGuardSight = Config.Bind("Cheats", "DisableGuardsSight", false);
-			Config_Cheat_DisableStamina = Config.Bind("Cheats", "DisableStamina", false);
-			Cheat.InventoryCheat.EnableSaveCheat = Config.Bind("Cheats", "SavePens", false).Value;
-			Cheat.VeryHardDifficultySave.AllowSaveOnVeryHard = Config.Bind("Cheats", "AllowSavingOnVeryHardDifficulty", false).Value;
+			Cheat.InventoryCheat.UseUnlimitedSavePens = Config.Bind("Cheats", "SavePens", false).Value;
+			Cheat.VeryHardDifficultySave.Use = Config.Bind("Cheats", "AllowSavingOnVeryHardDifficulty", false).Value;
+			Cheat.GodModeCheat.Use = Config.Bind("Cheats", "GodMode", false).Value;
+			Cheat.SecurityGuardCheat.Use = Config.Bind("Cheats", "DisableGuardsSight", false).Value;
+			Cheat.StaminaCheat.Use = Config.Bind("Cheats", "DisableStamina", false).Value;
+
 			Components.SettingsOverride.SetupConfig(Config);
 		}
 
@@ -42,15 +40,7 @@ namespace SuisHack
 #endif
 			HarmonyInstance.PatchAll();
 
-			if (Config_Cheat_GodMode.Value)
-				Cheat.EnableCheats.InjectEarly(HarmonyInstance);
-			if (Config_Cheat_DisableGuardSight.Value)
-				Cheat.SecurityGuardCheat.InjectEarly(HarmonyInstance);
-			if (Config_Cheat_DisableStamina.Value)
-				Cheat.StaminaCheat.InjectEarly(HarmonyInstance);
-
 			Components.SettingsOverride.Initialize();
-
 			Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} finished loading loaded!");
 		}
 	}

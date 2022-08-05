@@ -54,8 +54,11 @@ namespace SuisHack.Components
 		{
 			if(showGUI)
 			{
-				GUILayout.BeginHorizontal();
-				GUILayout.BeginVertical(GUI.skin.box);
+				Cursor.lockState = CursorLockMode.Confined;
+				Cursor.visible = true;
+
+				GUILayout.BeginVertical();
+				GUILayout.BeginHorizontal(GUI.skin.box);
 				{
 					GUILayout.BeginHorizontal();
 					GUILayout.Label($"Anisotropic filtering ({QualitySettings.anisotropicFiltering}):");
@@ -67,17 +70,26 @@ namespace SuisHack.Components
 						graphics_Aniso.Value = AnisotropicFiltering.ForceEnable;
 					GUILayout.EndHorizontal();
 				}
-				GUILayout.EndVertical();
-
-				GUILayout.BeginVertical(GUI.skin.box);
-				{
-					GUILayout.BeginHorizontal();
-					PlayerBehaviourPatches.UseInterpolation = GUILayout.Toggle(PlayerBehaviourPatches.UseInterpolation, "Character interpolation");
-					GUILayout.EndHorizontal();
-				}
-				GUILayout.EndVertical();
-
 				GUILayout.EndHorizontal();
+
+				GUILayout.BeginHorizontal(GUI.skin.box);
+				{
+					GUILayout.Label("Cheats:");
+					if (GameManager.instance != null && GameManager.instance.player)
+					{
+						var oldValue = Cheat.GodModeCheat.Use;
+						GameManager.instance.player.godMode = GUILayout.Toggle(GameManager.instance.player.godMode, "God mode");
+						if (GameManager.instance.player.godMode != oldValue)
+							Cheat.GodModeCheat.Use = oldValue;
+					}
+
+					PlayerBehaviourPatches.UseInterpolation = GUILayout.Toggle(PlayerBehaviourPatches.UseInterpolation, "Character interpolation");
+					Cheat.VeryHardDifficultySave.Use = GUILayout.Toggle(Cheat.VeryHardDifficultySave.Use, "Allow saves on very hard");
+					Cheat.SecurityGuardCheat.Use = GUILayout.Toggle(Cheat.SecurityGuardCheat.Use, "Disable guard's viewsight");
+
+				}
+				GUILayout.EndHorizontal();
+				GUILayout.EndVertical();
 			}
 		}
 

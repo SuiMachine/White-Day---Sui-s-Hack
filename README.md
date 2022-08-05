@@ -11,6 +11,7 @@
  * Option to hook code for security guard (janitor) view sight, so he ignores you. 
  * Option to hook code responsible for stemina (breath), so you don't get tired from running.
  * Option to hook code responsible for inventory (save file pens).
+**Important:** Cheats may break various aspects of the game - use them at your own risk. I am not going to be fixing bugs related to these cheats.
 
 # Requirements
 * The official copy of the game
@@ -19,10 +20,7 @@
 # Installation
 * Download [Sui's Hack](https://github.com/SuiMachine/White-Day---Sui-s-Hack/releases).
 * Extract the zip archive and move it to the game's directory.
-* If you want to configure the plugin, after starting the game once with it, go to ``<game folder>/BepInEx/config`` and edit ``SuisHack.cfg``.
-
-# Experimental warning
-* Movement interpolation may break things.
+* If you want to configure the plugin, after starting the game once with it, go to ``<game folder>/BepInEx/config`` and edit ``SuisHack.cfg`` or by pressing ``F11`` in game.
 
 # Notes
 * Some monitors report refresh rates as float values. For example Samsung's Odyssey G7 instead of reporting 240Hz to the system, reports 239.958 Hz. Unity expects integer values, so this will become 239 fps. If this happens, you can use ``Increase refresh rate by one`` setting in ``BepInEx/config/SuisHack.cfg``.

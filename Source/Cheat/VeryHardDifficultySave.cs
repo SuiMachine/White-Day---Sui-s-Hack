@@ -7,7 +7,7 @@ namespace SuisHack.Cheat
 	[HarmonyPatch]
 	public static class VeryHardDifficultySave
 	{
-		public static bool AllowSaveOnVeryHard = false;
+		public static bool Use = false;
 		private static LevelofDifficulty TempDifficulty;
 
 		[HarmonyPrefix]
@@ -15,7 +15,7 @@ namespace SuisHack.Cheat
 		public static void OnClickSavePrefix()
 		{
 			TempDifficulty = Global.playerInfo.difficulty;
-			if (AllowSaveOnVeryHard)
+			if (Use)
 			{
 				Global.playerInfo.difficulty = LevelofDifficulty.Hard;
 			}
@@ -25,7 +25,7 @@ namespace SuisHack.Cheat
 		[HarmonyPatch(typeof(SavePanelBehaviour), nameof(SavePanelBehaviour.OnClickSave))]
 		public static void OnClickSavePostfix()
 		{
-			if (AllowSaveOnVeryHard)
+			if (Use)
 			{
 				Global.playerInfo.difficulty = TempDifficulty;
 			}
@@ -35,7 +35,7 @@ namespace SuisHack.Cheat
 		[HarmonyPatch(typeof(EventTrigger), "CoroutineQuery")]
 		public static bool CoroutineTriggerEventCallerPrefix(EventTrigger __instance, EventNodeData data)
 		{
-			if(AllowSaveOnVeryHard && (EventQueryType)data.node.intParam1 == EventQueryType.IsDifficultyOverThen)
+			if(Use && (EventQueryType)data.node.intParam1 == EventQueryType.IsDifficultyOverThen)
 			{
 				GameObject target = null;
 				EventQueryType intParam = (EventQueryType)data.node.intParam1;

@@ -5,6 +5,7 @@
  * Adds 120, 144, 165 fps cap options added to game's settings together. If your monitor has a different refresh rate that option will also appear in the settings menu (read notes).
  * Movement interpolation to prevent player from being unable to move when using high FPS.
  * Enabling Vertical axis inversion now also affects the mouse input.
+ * Ability to change speaker mode from Stereo to Quad, 5.1, 7.1, Surround and Prologic.
  
 # Cheats (disabled by default):
  * Option to enable god mode that is hidden in game's libraries.

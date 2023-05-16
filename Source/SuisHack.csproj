@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>F:\Steam\steamapps\common\White Day a labyrinth named school\BepInEx\plugins\</OutputPath>
+    <OutputPath>H:\Steam\steamapps\common\White Day a labyrinth named school\BepInEx\plugins\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -31,15 +31,15 @@
   
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>H:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>H:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>H:\Steam\steamapps\common\White Day a labyrinth named school\WhiteDay_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

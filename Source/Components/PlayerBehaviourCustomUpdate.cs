@@ -77,7 +77,11 @@ namespace SuisHack.Components
 						rotationGamepadY = ((!Global.config.JoyPadVertivalReversal) ? (-Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f) : (Input.GetAxis("JoystickAxis5") * Global.config.JoypadVertivalSpeed / 2f));
 						rotationGamepadX = ((!Global.config.JoyPadHorizontalReversal) ? (Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f) : (-Input.GetAxis("JoystickAxis4") * Global.config.JoypadHorizontalSpeed / 2f));
 					}
-					rotation.Set(Input.GetAxis("Mouse X") + rotationGamepadX, (Global.config.JoyPadVertivalReversal ? -Input.GetAxis("Mouse Y") : Input.GetAxis("Mouse Y")) + rotationGamepadY);
+
+					float MouseMoveX = Input.GetAxis("Mouse X") * Global.config.JoypadHorizontalSpeed * 0.25f;
+					float MouseMoveY = Input.GetAxis("Mouse Y") * Global.config.JoypadVertivalSpeed * 0.25f;
+
+					rotation.Set(MouseMoveX + rotationGamepadX, (Global.config.JoyPadVertivalReversal ? -MouseMoveY : MouseMoveY) + rotationGamepadY);
 					rotation *= Global.config.controlSensitivity * 2f;
 					playerBehaviourRef.transform.rotation = Quaternion.Euler(0f, rotation.x, 0f) * playerBehaviourRef.transform.rotation;
 					var fMaxAngularVelocity = (float)maxAngularVelocity.Invoke(playerBehaviourRef, new object[] { });
